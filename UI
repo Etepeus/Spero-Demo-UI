@@ -1,0 +1,91 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+
+export default function PermitApplication() {
+  const [step, setStep] = useState(1);
+  const [userDetails, setUserDetails] = useState({ name: "", email: "", phone: "" });
+  const [proceedWithPermit, setProceedWithPermit] = useState(false);
+  const totalSteps = 6;
+
+  const handleLogin = () => {
+    console.log("Logging in user:", userDetails);
+  };
+
+  return (
+    <div className="container mx-auto p-6">
+      <header className="text-center mb-6">
+        <h1 className="text-xl font-bold">Spero-ai Permit Application</h1>
+      </header>
+      <Card className="p-6 max-w-4xl mx-auto">
+        <Progress value={(step / totalSteps) * 100} className="mb-4" />
+
+        <Tabs defaultValue="step1">
+          <TabsList className="grid grid-cols-6">
+            {[...Array(totalSteps)].map((_, index) => (
+              <TabsTrigger 
+                key={index} 
+                value={`step${index + 1}`} 
+                onClick={() => setStep(index + 1)}
+              >
+                {index + 1}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          <TabsContent value="step1">
+            <h2 className="text-lg font-semibold mb-2">Step 1: User Details</h2>
+            <Input placeholder="Full Name" className="mb-4" onChange={(e) => setUserDetails({...userDetails, name: e.target.value})} />
+            <Input placeholder="Email Address" className="mb-4" onChange={(e) => setUserDetails({...userDetails, email: e.target.value})} />
+            <Input placeholder="Phone Number" className="mb-4" onChange={(e) => setUserDetails({...userDetails, phone: e.target.value})} />
+            <Button onClick={handleLogin}>Login</Button>
+            <Button onClick={() => setStep(2)}>Next</Button>
+          </TabsContent>
+
+          <TabsContent value="step2">
+            <h2 className="text-lg font-semibold mb-2">Step 2: Building Requirements</h2>
+            <Input placeholder="Project Address" className="mb-4" />
+            <Textarea placeholder="Building Specifications" className="mb-4" />
+            <label className="block mb-2">Upload Supporting Documents:</label>
+            <Input type="file" className="mb-4" multiple />
+            <Button onClick={() => setStep(3)}>Next</Button>
+          </TabsContent>
+
+          <TabsContent value="step3">
+            <h2 className="text-lg font-semibold mb-2">Step 3: Compliance Assessment</h2>
+            <p className="mb-4">Your application will be assessed using the Council Compliance Checker.</p>
+            <Button>Assess Requirements</Button>
+            <Button onClick={() => setStep(4)}>Next</Button>
+          </TabsContent>
+
+          <TabsContent value="step4">
+            <h2 className="text-lg font-semibold mb-2">Step 4: Proceed with Permit Application</h2>
+            <Checkbox checked={proceedWithPermit} onCheckedChange={setProceedWithPermit} className="mb-4" />
+            <label className="ml-2">I want to proceed with the permit application</label>
+            <Button onClick={() => setStep(5)} disabled={!proceedWithPermit}>Next</Button>
+          </TabsContent>
+
+          <TabsContent value="step5">
+            <h2 className="text-lg font-semibold mb-2">Step 5: Payment Processing</h2>
+            <Input type="text" placeholder="Name on Card" className="mb-4" />
+            <Input type="text" placeholder="Card Number" className="mb-4" />
+            <Input type="text" placeholder="Expiry Date (MM/YY)" className="mb-4" />
+            <Input type="text" placeholder="CVC" className="mb-4" />
+            <Button onClick={() => setStep(6)}>Next</Button>
+          </TabsContent>
+
+          <TabsContent value="step6">
+            <h2 className="text-lg font-semibold mb-2">Step 6: Final Approval Submission</h2>
+            <p className="mb-4">Your permit application has been submitted for final approval.</p>
+            <Button>Finish</Button>
+          </TabsContent>
+        </Tabs>
+      </Card>
+    </div>
+  );
+}
